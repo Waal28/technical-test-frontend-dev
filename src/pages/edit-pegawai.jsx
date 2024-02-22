@@ -11,9 +11,7 @@ export default function EditPegawai() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { getData, updateData } = service();
-  const { user, provinsi, kota, kecamatan } = useSelector(
-    (state) => state.pegawaiReducer
-  );
+  const { user } = useSelector((state) => state.pegawaiReducer);
   const [loading, setLoading] = React.useState(false);
   const initialValue = {
     id: null,
