@@ -197,7 +197,7 @@ export default function FormComp(props) {
           <Button
             variant="outlined"
             disableElevation
-            sx={{ m: 1 }}
+            sx={{ m: 1, minWidth: "100px", textTransform: "capitalize" }}
             type="button"
             onClick={handleCancle}
           >
@@ -206,7 +206,7 @@ export default function FormComp(props) {
           <Button
             variant="contained"
             disableElevation
-            sx={{ m: 1 }}
+            sx={{ m: 1, minWidth: "100px", textTransform: "capitalize" }}
             type="submit"
           >
             {loading ? (

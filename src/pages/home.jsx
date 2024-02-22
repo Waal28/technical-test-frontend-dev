@@ -119,7 +119,11 @@ export default function Home() {
           width: "100%",
         }}
       >
-        <Button variant="contained" onClick={() => navigate("/create-pegawai")}>
+        <Button
+          variant="contained"
+          onClick={() => navigate("/create-pegawai")}
+          sx={{ textTransform: "capitalize" }}
+        >
           <AddIcon /> Tambah Pegawai
         </Button>
       </Box>

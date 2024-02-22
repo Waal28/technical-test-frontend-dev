@@ -62,10 +62,18 @@ export default function BasicModal(props) {
             {textBody}
           </Typography>
           <Box sx={{ display: "flex", justifyContent: "space-evenly", mt: 3 }}>
-            <Button onClick={handleClose} variant="outlined">
+            <Button
+              onClick={handleClose}
+              variant="outlined"
+              sx={{ textTransform: "capitalize", minWidth: "100px" }}
+            >
               Tidak
             </Button>
-            <Button onClick={handleConfirm} variant="contained">
+            <Button
+              onClick={handleConfirm}
+              variant="contained"
+              sx={{ textTransform: "capitalize", minWidth: "100px" }}
+            >
               {loading ? <CircularProgress color="inherit" size={22} /> : "Ya"}
             </Button>
           </Box>
