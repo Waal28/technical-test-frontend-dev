@@ -15,6 +15,10 @@ export default function EditPegawai() {
     (state) => state.pegawaiReducer
   );
   const [loading, setLoading] = React.useState(false);
+  const initialValue = {
+    id: null,
+    name: "",
+  };
 
   const location = useLocation();
   const id = location.state.id;
@@ -51,9 +55,9 @@ export default function EditPegawai() {
         setUser({
           nama: "",
           jalan: "",
-          provinsi: provinsi[0],
-          kota: kota[0],
-          kecamatan: kecamatan[0],
+          provinsi: initialValue,
+          kota: initialValue,
+          kecamatan: initialValue,
         })
       );
 
