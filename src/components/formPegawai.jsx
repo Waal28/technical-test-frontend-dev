@@ -203,7 +203,7 @@ export default function FormPegawai(props) {
             type="button"
             onClick={handleCancle}
           >
-            Batal
+            Reset
           </Button>
           <Button
             variant="contained"
