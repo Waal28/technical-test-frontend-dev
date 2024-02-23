@@ -16,6 +16,7 @@ const initialState = {
     vertical: "top",
     horizontal: "right",
   },
+  isDarkMode: false,
 };
 
 const mySlice = createSlice({
@@ -28,8 +29,11 @@ const mySlice = createSlice({
     setToast: (state, action) => {
       state.toast = { ...state.toast, ...action.payload };
     },
+    setIsDarkMode: (state, action) => {
+      state.isDarkMode = action.payload;
+    },
   },
 });
 
-export const { setConfirmModal, setToast } = mySlice.actions;
+export const { setConfirmModal, setToast, setIsDarkMode } = mySlice.actions;
 export default mySlice.reducer;

@@ -1,13 +1,17 @@
 import { Box, CircularProgress } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import service from "../service";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../reducers/pegawai";
 import { setToast } from "../reducers/component";
-import FormPegawai from "../components/formPegawai";
+import FormAndTableWrapper from "../components/FormAndTableWrapper";
+import FormPegawai from "../components/FormPegawai";
+import API_ENDPOINTS from "../config/apiEndpoints";
 
 export default function EditPegawai() {
+  const pegawaiApiUrl = API_ENDPOINTS.PEGAWAI;
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { getData, updateData } = service();
@@ -24,9 +28,7 @@ export default function EditPegawai() {
   const [loadGetData, setLoadGetData] = React.useState(true);
 
   async function getOnePegawai() {
-    const { data, loading } = await getData(
-      `https://61601920faa03600179fb8d2.mockapi.io/pegawai/${id}`
-    );
+    const { data, loading } = await getData(`${pegawaiApiUrl}/${id}`);
     setUserSelected(data);
     dispatch(setUser(data));
 
@@ -36,8 +38,7 @@ export default function EditPegawai() {
     event.preventDefault();
     setLoading(true);
     const params = {
-      url: `https://61601920faa03600179fb8d2.mockapi.io/pegawai/${id}`,
-      urlGetData: "https://61601920faa03600179fb8d2.mockapi.io/pegawai",
+      url: `${pegawaiApiUrl}/${id}`,
       body: user,
     };
     const { loading } = await updateData(params);
@@ -65,7 +66,19 @@ export default function EditPegawai() {
   function handleCancle() {
     dispatch(setUser(userSelected));
   }
+  function handleBack() {
+    dispatch(
+      setUser({
+        nama: "",
+        jalan: "",
+        provinsi: initialValue,
+        kota: initialValue,
+        kecamatan: initialValue,
+      })
+    );
 
+    navigate("/");
+  }
   useEffect(() => {
     getOnePegawai();
     // eslint-disable-next-line
@@ -86,12 +99,17 @@ export default function EditPegawai() {
     );
   } else {
     return (
-      <FormPegawai
-        loading={loading}
+      <FormAndTableWrapper
         textHeader="Edit Data Pegawai"
-        handleSave={updatePegawai}
-        handleCancle={handleCancle}
-      />
+        handleNavigate={handleBack}
+        textButton={<ArrowBackIcon />}
+      >
+        <FormPegawai
+          loading={loading}
+          handleSave={updatePegawai}
+          handleCancle={handleCancle}
+        />
+      </FormAndTableWrapper>
     );
   }
 }

@@ -4,9 +4,13 @@ import service from "../service";
 import { useDispatch, useSelector } from "react-redux";
 import { setToast } from "../reducers/component";
 import { setUser } from "../reducers/pegawai";
-import FormPegawai from "../components/formPegawai";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import FormAndTableWrapper from "../components/FormAndTableWrapper";
+import FormPegawai from "../components/FormPegawai";
+import API_ENDPOINTS from "../config/apiEndpoints";
 
 export default function CreatePegawai() {
+  const pegawaiApiUrl = API_ENDPOINTS.PEGAWAI;
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { postData } = service();
@@ -20,8 +24,7 @@ export default function CreatePegawai() {
     event.preventDefault();
     setLoading(true);
     const params = {
-      url: "https://61601920faa03600179fb8d2.mockapi.io/pegawai",
-      urlGetData: "https://61601920faa03600179fb8d2.mockapi.io/pegawai",
+      url: pegawaiApiUrl,
       body: user,
     };
     const { loading } = await postData(params);
@@ -66,13 +69,30 @@ export default function CreatePegawai() {
       })
     );
   }
+  function handleBack() {
+    dispatch(
+      setUser({
+        nama: "",
+        jalan: "",
+        provinsi: initialValue,
+        kota: initialValue,
+        kecamatan: initialValue,
+      })
+    );
 
+    navigate("/");
+  }
   return (
-    <FormPegawai
-      loading={loading}
+    <FormAndTableWrapper
       textHeader="Tambah Data Pegawai"
-      handleSave={createPegawai}
-      handleCancle={handleCancle}
-    />
+      handleNavigate={handleBack}
+      textButton={<ArrowBackIcon />}
+    >
+      <FormPegawai
+        loading={loading}
+        handleSave={createPegawai}
+        handleCancle={handleCancle}
+      />
+    </FormAndTableWrapper>
   );
 }

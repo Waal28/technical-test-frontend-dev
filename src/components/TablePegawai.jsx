@@ -10,7 +10,7 @@ import TableRow from "@mui/material/TableRow";
 import { CircularProgress } from "@mui/material";
 import PropTypes from "prop-types";
 
-export default function TableComp(props) {
+export default function TablePegawai(props) {
   const { columns, rows, loading } = props;
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [page, setPage] = React.useState(0);
@@ -23,7 +23,14 @@ export default function TableComp(props) {
   };
 
   return (
-    <Paper sx={{ width: "100%", overflow: "hidden", borderRadius: "10px" }}>
+    <Paper
+      sx={{
+        width: "100%",
+        overflow: "hidden",
+        borderRadius: "10px",
+        boxShadow: "0px 5px 20px 1px rgba(0, 0, 0, 0.25)",
+      }}
+    >
       <TableContainer sx={{ maxHeight: 440 }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
@@ -77,7 +84,7 @@ export default function TableComp(props) {
   );
 }
 
-TableComp.propTypes = {
+TablePegawai.propTypes = {
   columns: PropTypes.array.isRequired,
   rows: PropTypes.array.isRequired,
   loading: PropTypes.bool.isRequired,

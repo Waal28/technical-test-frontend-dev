@@ -20,7 +20,7 @@ const style = {
 };
 import PropTypes from "prop-types";
 
-export default function BasicModal(props) {
+export default function ModalConfirm(props) {
   const { handleAction } = props;
   const { confirmModal } = useSelector((state) => state.componentReducer);
   const { open, textHeader, textBody } = confirmModal;
@@ -82,6 +82,6 @@ export default function BasicModal(props) {
     </div>
   );
 }
-BasicModal.propTypes = {
+ModalConfirm.propTypes = {
   handleAction: PropTypes.func.isRequired,
 };

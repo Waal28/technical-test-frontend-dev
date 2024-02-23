@@ -3,7 +3,7 @@ import Alert from "@mui/material/Alert";
 import { useDispatch, useSelector } from "react-redux";
 import { setToast } from "../reducers/component";
 
-export default function ToastComp() {
+export default function Toastify() {
   const dispatch = useDispatch();
   const { toast } = useSelector((state) => state.componentReducer);
   const { open, text, severity, variant, duration, vertical, horizontal } =

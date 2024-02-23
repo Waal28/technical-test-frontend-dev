@@ -1,17 +1,19 @@
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { Box, Button, Container, IconButton } from "@mui/material";
+import { Box, IconButton, Tooltip } from "@mui/material";
 import React, { useEffect } from "react";
-import TableComp from "../components/table";
+import TablePegawai from "../components/TablePegawai";
 import { useNavigate } from "react-router-dom";
-import ToastComp from "../components/toast";
+import Toastify from "../components/Toastify";
 import { useDispatch, useSelector } from "react-redux";
 import service from "../service";
 import { setPegawai, setUser } from "../reducers/pegawai";
-import BasicModal from "../components/modal";
+import ModalConfirm from "../components/ModalConfirm";
 import { setConfirmModal, setToast } from "../reducers/component";
 import PropTypes from "prop-types";
+import FormAndTableWrapper from "../components/FormAndTableWrapper";
+import API_ENDPOINTS from "../config/apiEndpoints";
 
 function Action({ id, nama }) {
   const navigate = useNavigate();
@@ -34,12 +36,16 @@ function Action({ id, nama }) {
 
   return (
     <Box sx={{ display: "flex", justifyContent: "center" }}>
-      <IconButton color="success" aria-label="edit" onClick={handleEdit}>
-        <EditIcon />
-      </IconButton>
-      <IconButton color="error" aria-label="delete" onClick={handleDelete}>
-        <DeleteIcon />
-      </IconButton>
+      <Tooltip title="Edit">
+        <IconButton color="success" aria-label="edit" onClick={handleEdit}>
+          <EditIcon />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title="Delete">
+        <IconButton color="error" aria-label="delete" onClick={handleDelete}>
+          <DeleteIcon />
+        </IconButton>
+      </Tooltip>
     </Box>
   );
 }
@@ -68,8 +74,8 @@ function createRows(users) {
 }
 
 export default function Home() {
+  const pegawaiApiUrl = API_ENDPOINTS.PEGAWAI;
   const navigate = useNavigate();
-
   const [loading, setLoading] = React.useState(true);
   const { pegawai, user } = useSelector((state) => state.pegawaiReducer);
   const columns = [
@@ -86,14 +92,12 @@ export default function Home() {
   const dispatch = useDispatch();
 
   async function getPegawai() {
-    const url = "https://61601920faa03600179fb8d2.mockapi.io/pegawai";
-    const { data, loading } = await getData(url);
+    const { data, loading } = await getData(pegawaiApiUrl);
     setLoading(loading);
     dispatch(setPegawai(data));
   }
   async function deletePegawai() {
-    const url = `https://61601920faa03600179fb8d2.mockapi.io/pegawai/${user.id}`;
-    const { loading } = await deleteData(url);
+    const { loading } = await deleteData(`${pegawaiApiUrl}/${user.id}`);
     if (!loading) {
       dispatch(
         setToast({
@@ -112,27 +116,22 @@ export default function Home() {
     // eslint-disable-next-line
   }, []);
   return (
-    <Container maxWidth="md">
-      <Box
-        sx={{
-          margin: "20px 0",
-          width: "100%",
-        }}
-      >
-        <Button
-          variant="contained"
-          onClick={() => navigate("/create-pegawai")}
-          sx={{ textTransform: "capitalize" }}
-        >
-          <AddIcon /> Tambah Pegawai
-        </Button>
-      </Box>
-      <h1 style={{ textAlign: "center", fontFamily: "sans-serif" }}>
-        Data Pegawai
-      </h1>
-      <TableComp columns={columns} rows={rows} loading={loading} />
-      <ToastComp />
-      <BasicModal handleAction={deletePegawai} />
-    </Container>
+    <FormAndTableWrapper
+      textHeader="Data Pegawai"
+      handleNavigate={() => navigate("/create-pegawai")}
+      textButton={<AddDataButon />}
+    >
+      <TablePegawai columns={columns} rows={rows} loading={loading} />
+      <Toastify />
+      <ModalConfirm handleAction={deletePegawai} />
+    </FormAndTableWrapper>
+  );
+}
+
+function AddDataButon() {
+  return (
+    <>
+      <AddIcon /> Tambah Pegawai
+    </>
   );
 }
