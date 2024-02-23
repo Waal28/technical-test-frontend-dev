@@ -26,38 +26,42 @@ export default function FormPegawai(props) {
   const wilayahIndoApiUrl = API_ENDPOINTS.WILAYAH_INDONESIA;
   const { loading, handleSave, handleCancle } = props;
   const { getData } = service();
-  const { user, provinsi, kota, kecamatan } = useSelector(
+  const { user, initialValueUser, provinsi, kota, kecamatan } = useSelector(
     (state) => state.pegawaiReducer
   );
-  const initialValue = {
-    id: null,
-    name: "",
-  };
 
   const dispatch = useDispatch();
   async function getProvinsi() {
-    const { data } = await getData(`${wilayahIndoApiUrl}/provinces.json`);
-    const items = data.map((item) => ({ ...item, label: item.name }));
-    dispatch(setProvinsi(items));
+    const { data, success } = await getData(
+      `${wilayahIndoApiUrl}/provinces.json`
+    );
+    if (success) {
+      const items = data.map((item) => ({ ...item, label: item.name }));
+      dispatch(setProvinsi(items));
+    }
   }
   async function getKota() {
     if (user.provinsi.id !== null) {
-      const { data } = await getData(
+      const { data, success } = await getData(
         `${wilayahIndoApiUrl}/regencies/${user.provinsi.id}.json`
       );
-      dispatch(setKota(data));
+      if (success) {
+        dispatch(setKota(data));
+      }
     } else {
-      dispatch(setKota([initialValue]));
+      dispatch(setKota([initialValueUser.kota]));
     }
   }
   async function getKecamatan() {
     if (user.kota.id !== null && user.provinsi.id !== null) {
-      const { data } = await getData(
+      const { data, success } = await getData(
         `${wilayahIndoApiUrl}/districts/${user.kota.id}.json`
       );
-      dispatch(setKecamatan(data));
+      if (success) {
+        dispatch(setKecamatan(data));
+      }
     } else {
-      dispatch(setKecamatan([initialValue]));
+      dispatch(setKecamatan([initialValueUser.kecamatan]));
     }
   }
   function handleChangeProv(event, newValue) {
@@ -65,9 +69,9 @@ export default function FormPegawai(props) {
       dispatch(
         setUser({
           ...user,
-          provinsi: initialValue,
-          kota: initialValue,
-          kecamatan: initialValue,
+          provinsi: initialValueUser.provinsi,
+          kota: initialValueUser.kota,
+          kecamatan: initialValueUser.kecamatan,
         })
       );
     } else {
@@ -75,14 +79,20 @@ export default function FormPegawai(props) {
         setUser({
           ...user,
           provinsi: newValue,
-          kota: initialValue,
-          kecamatan: initialValue,
+          kota: initialValueUser.kota,
+          kecamatan: initialValueUser.kecamatan,
         })
       );
     }
   }
   function handleChangeKota(event) {
-    dispatch(setUser({ ...user, kota: JSON.parse(event.target.value) }));
+    dispatch(
+      setUser({
+        ...user,
+        kota: JSON.parse(event.target.value),
+        kecamatan: initialValueUser.kecamatan,
+      })
+    );
   }
   function handleChangeKec(event) {
     dispatch(setUser({ ...user, kecamatan: JSON.parse(event.target.value) }));

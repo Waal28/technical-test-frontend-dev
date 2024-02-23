@@ -5,7 +5,6 @@ import { Box, IconButton, Tooltip } from "@mui/material";
 import React, { useEffect } from "react";
 import TablePegawai from "../components/TablePegawai";
 import { useNavigate } from "react-router-dom";
-import Toastify from "../components/Toastify";
 import { useDispatch, useSelector } from "react-redux";
 import service from "../service";
 import { setPegawai, setUser } from "../reducers/pegawai";
@@ -77,7 +76,9 @@ export default function Home() {
   const pegawaiApiUrl = API_ENDPOINTS.PEGAWAI;
   const navigate = useNavigate();
   const [loading, setLoading] = React.useState(true);
-  const { pegawai, user } = useSelector((state) => state.pegawaiReducer);
+  const { pegawai, user, initialValueUser } = useSelector(
+    (state) => state.pegawaiReducer
+  );
   const columns = [
     { id: "no", label: "No", align: "center" },
     { id: "nama", label: "Nama", align: "center" },
@@ -92,22 +93,26 @@ export default function Home() {
   const dispatch = useDispatch();
 
   async function getPegawai() {
-    const { data, loading } = await getData(pegawaiApiUrl);
-    setLoading(loading);
-    dispatch(setPegawai(data));
+    const { data, success } = await getData(pegawaiApiUrl);
+    if (success) {
+      setLoading(false);
+      dispatch(setPegawai(data));
+    }
   }
   async function deletePegawai() {
-    const { loading } = await deleteData(`${pegawaiApiUrl}/${user.id}`);
-    if (!loading) {
+    const { success } = await deleteData(`${pegawaiApiUrl}/${user.id}`);
+    if (success) {
       dispatch(
         setToast({
           open: true,
           text: "Data berhasil dihapus",
+          severity: "success",
         })
       );
+      dispatch(setUser(initialValueUser));
+      getPegawai();
+      return { loading: false };
     }
-    getPegawai();
-    return { loading };
   }
 
   useEffect(() => {
@@ -122,7 +127,6 @@ export default function Home() {
       textButton={<AddDataButon />}
     >
       <TablePegawai columns={columns} rows={rows} loading={loading} />
-      <Toastify />
       <ModalConfirm handleAction={deletePegawai} />
     </FormAndTableWrapper>
   );

@@ -14,71 +14,53 @@ export default function CreatePegawai() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { postData } = service();
-  const { user } = useSelector((state) => state.pegawaiReducer);
+  const { user, initialValueUser } = useSelector(
+    (state) => state.pegawaiReducer
+  );
   const [loading, setLoading] = React.useState(false);
-  const initialValue = {
-    id: null,
-    name: "",
-  };
+
   async function createPegawai(event) {
     event.preventDefault();
     setLoading(true);
-    const params = {
-      url: pegawaiApiUrl,
-      body: user,
-    };
-    const { loading } = await postData(params);
-    setLoading(loading);
-    if (!loading) {
+    if (
+      user.provinsi.id === null ||
+      user.kota.id === null ||
+      user.kecamatan.id === null
+    ) {
       dispatch(
         setToast({
           open: true,
-          text: "Data berhasil ditambahkan",
+          text: "Provinsi, Kota, dan Kecamatan harus diisi",
+          severity: "error",
         })
       );
-      dispatch(
-        setUser({
-          nama: "",
-          jalan: "",
-          provinsi: initialValue,
-          kota: initialValue,
-          kecamatan: initialValue,
-        })
-      );
-      navigate("/");
+      setLoading(false);
+    } else {
+      const params = {
+        url: pegawaiApiUrl,
+        body: user,
+      };
+      const { success } = await postData(params);
+
+      if (success) {
+        dispatch(
+          setToast({
+            open: true,
+            text: "Data berhasil ditambahkan",
+            severity: "success",
+          })
+        );
+        dispatch(setUser(initialValueUser));
+        setLoading(false);
+        navigate("/");
+      }
     }
   }
   function handleCancle() {
-    dispatch(
-      setUser({
-        id: null,
-        nama: "",
-        jalan: "",
-        provinsi: {
-          id: null,
-          name: "",
-        },
-        kota: {
-          id: null,
-          name: "",
-        },
-        kecamatan: {
-          id: null,
-          name: "",
-        },
-      })
-    );
+    dispatch(setUser(initialValueUser));
   }
   function handleBack() {
-    dispatch(
-      setUser({
-        nama: "",
-        jalan: "",
-        provinsi: initialValue,
-        kota: initialValue,
-        kecamatan: initialValue,
-      })
-    );
+    dispatch(setUser(initialValueUser));
 
     navigate("/");
   }

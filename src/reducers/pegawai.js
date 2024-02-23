@@ -19,6 +19,23 @@ const initialState = {
       name: "",
     },
   },
+  initialValueUser: {
+    id: null,
+    nama: "",
+    jalan: "",
+    provinsi: {
+      id: null,
+      name: "",
+    },
+    kota: {
+      id: null,
+      name: "",
+    },
+    kecamatan: {
+      id: null,
+      name: "",
+    },
+  },
   provinsi: [
     {
       id: null,

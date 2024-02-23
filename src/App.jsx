@@ -5,6 +5,7 @@ import CreatePegawai from "./pages/create-pegawai";
 import EditPegawai from "./pages/edit-pegawai";
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import { useSelector } from "react-redux";
+import Toastify from "./components/Toastify";
 
 function App() {
   const { isDarkMode } = useSelector((state) => state.componentReducer);
@@ -24,6 +25,7 @@ function App() {
         <Route path="/edit-pegawai/:nama" element={<EditPegawai />} />
         <Route path="*" element={<Home />} />
       </Routes>
+      <Toastify />
     </ThemeProvider>
   );
 }

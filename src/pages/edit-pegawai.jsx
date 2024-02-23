@@ -15,12 +15,10 @@ export default function EditPegawai() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { getData, updateData } = service();
-  const { user } = useSelector((state) => state.pegawaiReducer);
+  const { user, initialValueUser } = useSelector(
+    (state) => state.pegawaiReducer
+  );
   const [loading, setLoading] = React.useState(false);
-  const initialValue = {
-    id: null,
-    name: "",
-  };
 
   const location = useLocation();
   const id = location.state.id;
@@ -37,45 +35,46 @@ export default function EditPegawai() {
   async function updatePegawai(event) {
     event.preventDefault();
     setLoading(true);
-    const params = {
-      url: `${pegawaiApiUrl}/${id}`,
-      body: user,
-    };
-    const { loading } = await updateData(params);
-    setLoading(loading);
-    if (!loading) {
+
+    if (
+      user.provinsi.id === null ||
+      user.kota.id === null ||
+      user.kecamatan.id === null
+    ) {
       dispatch(
         setToast({
           open: true,
-          text: "Data berhasil diubah",
+          text: "Provinsi, Kota, dan Kecamatan harus diisi",
+          severity: "error",
         })
       );
-      dispatch(
-        setUser({
-          nama: "",
-          jalan: "",
-          provinsi: initialValue,
-          kota: initialValue,
-          kecamatan: initialValue,
-        })
-      );
+      setLoading(false);
+    } else {
+      const params = {
+        url: `${pegawaiApiUrl}/${id}`,
+        body: user,
+      };
+      const { success } = await updateData(params);
 
-      navigate("/");
+      if (success) {
+        dispatch(
+          setToast({
+            open: true,
+            text: "Data berhasil diubah",
+            severity: "success",
+          })
+        );
+        dispatch(setUser(initialValueUser));
+        setLoading(false);
+        navigate("/");
+      }
     }
   }
   function handleCancle() {
     dispatch(setUser(userSelected));
   }
   function handleBack() {
-    dispatch(
-      setUser({
-        nama: "",
-        jalan: "",
-        provinsi: initialValue,
-        kota: initialValue,
-        kecamatan: initialValue,
-      })
-    );
+    dispatch(setUser(initialValueUser));
 
     navigate("/");
   }
